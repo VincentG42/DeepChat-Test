@@ -7,7 +7,7 @@ function App() {
 
   const assistantId = process.env.REACT_APP_ASSISTANT_V1_ID;
   const apiKey = process.env.REACT_APP_OPENAI;
-  console.log("assistantId:", assistantId);
+
 
 
 
