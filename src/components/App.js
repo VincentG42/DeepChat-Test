@@ -1,36 +1,57 @@
-
 import './App.css';
-import { DeepChat } from 'deep-chat-react-dev';
-
+import { DeepChat } from 'deep-chat-react';
 
 function App() {
 
-  const assistantId = process.env.REACT_APP_ASSISTANT_V1_ID;
-  const apiKey = process.env.REACT_APP_OPENAI;
+  // const assistantId = process.env.REACT_APP_ASSISTANT_V1_ID;
+  // const apiKey = process.env.REACT_APP_OPENAI; 
 
+  const requestInterceptor = (request) => {
+    // console.log('Requête DeepChat interceptée:', request);
 
+    if (request.body && request.body.messages) {
+      request.body.messages = request.body.messages.map(msg => ({
+        role: msg.role || 'user',
+        content: msg.text || ''
+      }));
+    }
 
+    return request;
+  };
+  const responseInterceptor = (response) => {
+    // console.log('Réponse DeepChat interceptée:', response);
 
-  const initialMessages = [
+    return {
 
-    { role: 'ai', text: "Je suis ici pour vous aider à choisir l'offre HubSpot la plus adaptée à vos besoins. Comment puis-je vous aider?" },
-  ];
+      text: response.content
+    }
+
+      ;
+  };
 
   return (
     <div className="App">
       <DeepChat
-        directConnection={{
-          openAI: {
-            key: apiKey,
-            assistant: {
-              assistant_id: assistantId,
-            }
-          },
-          chat: {
-            system_prompt: `Vous êtes un assistant virtuel spécialisé dans l'aide à la sélection du bon pack HubSpot pour les entreprises. Fournissez des réponses claires et précises aux questions des utilisateurs concernant HubSpot en utilisant les documents fournis. Répondez uniquement en français.`
+        request={{
+          url: "http://localhost:3002/chatbot-idea/completion",
+          method: "post",
+          headers: {
+            "Content-Type": "application/json"
           }
-        }
-        }
+        }}
+        requestInterceptor={requestInterceptor} 
+        responseInterceptor={responseInterceptor} 
+        // directConnection={{
+        //   openAI: {
+        //     key: apiKey,
+        //     assistant: {
+        //       assistant_id: assistantId,
+        //     }
+        //   },
+        //   chat: {
+        //     system_prompt: `Vous êtes un assistant virtuel spécialisé dans l'aide à la sélection du bon pack HubSpot pour les entreprises. Fournissez des réponses claires et précises aux questions des utilisateurs concernant HubSpot en utilisant les documents fournis. Répondez uniquement en français.`
+        //   }
+        // }}
         style={{
           borderRadius: '10px',
           boxShadow: '1px 8px 4px 4px #000000'
@@ -54,10 +75,9 @@ function App() {
 
             }
           }
-        }
-        }
+        }}
         textInput={{ placeholder: { "text": "Posez-moi vos questions?" } }}
-        initialMessages={initialMessages} />
+        introMessage={{ text: "Je suis ici pour vous permettre de choisir l'offre HubSpot la plus adaptée à vos besoins. Comment puis-je vous aider?" }} />
     </div>
   );
 }
