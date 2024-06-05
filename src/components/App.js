@@ -7,23 +7,28 @@ function App() {
   // const apiKey = process.env.REACT_APP_OPENAI; 
 
   const requestInterceptor = (request) => {
-    // console.log('Requête DeepChat interceptée:', request);
+    console.log('Requête DeepChat interceptée:', request);
 
     if (request.body && request.body.messages) {
       request.body.messages = request.body.messages.map(msg => ({
         role: msg.role || 'user',
-        content: msg.text || ''
+        content: msg.text || '',
+        
       }));
+      request.body.thread_id = localStorage.getItem('thread_id');
     }
 
     return request;
   };
-  const responseInterceptor = (response) => {
-    // console.log('Réponse DeepChat interceptée:', response);
+  async function responseInterceptor(response) {
+    console.log('Réponse DeepChat interceptée:', response);
+    if (response.thread_id) {
+      localStorage.setItem('thread_id', response.thread_id);
+    }
 
     return {
 
-      text: response.content
+      text: response.text
     }
 
       ;
@@ -39,8 +44,8 @@ function App() {
             "Content-Type": "application/json"
           }
         }}
-        requestInterceptor={requestInterceptor} 
-        responseInterceptor={responseInterceptor} 
+        requestInterceptor={requestInterceptor}
+        responseInterceptor={responseInterceptor}
         // directConnection={{
         //   openAI: {
         //     key: apiKey,
