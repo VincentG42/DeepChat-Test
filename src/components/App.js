@@ -38,7 +38,7 @@ function App() {
     <div className="App">
       <DeepChat
         request={{
-          url: "http://localhost:3002/chatbot-idea/completion",
+          url: "/chatbot-idea/completion",
           method: "post",
           headers: {
             "Content-Type": "application/json"
