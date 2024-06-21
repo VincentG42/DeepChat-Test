@@ -59,13 +59,16 @@ function App() {
         // }}
         style={{
           borderRadius: '10px',
-          boxShadow: '1px 8px 4px 4px #000000'
+          height: '90svh',
+          width: '90svw',
         }}
+
         messageStyles={{
           default: {
             shared: {
               bubble: {
-                maxWidth: "100%", backgroundColor: "unset", marginTop: "10px", marginBottom: "10px", color: "#100339"
+
+                maxWidth: "100%", backgroundColor: "unset", marginTop: "15px", marginBottom: "15px", color: "#100339"
               }
             },
             user: {
@@ -75,14 +78,32 @@ function App() {
             },
             ai: {
               outerContainer: {
-                backgroundColor: "rgba(247,247,248)", borderTop: "1px solid rgba(0,0,0,.1)", borderBottom: "1px solid rgba(0,0,0,.1)"
+                backgroundColor: "#f3f9ff", borderTop: "1px solid #100339", borderBottom: "1px solid #100339"
               },
 
             }
           }
         }}
-        textInput={{ placeholder: { "text": "Posez-moi vos questions?" } }}
-        introMessage={{ text: "Je suis ici pour vous permettre de choisir l'offre HubSpot la plus adaptée à vos besoins. Comment puis-je vous aider?" }} />
+
+        textInput={{ placeholder: { "text": "Posez-moi vos questions?", "style": {"color": "#100339"}},
+                      styles: {
+                                "container": {
+                                  "width": "95%",
+                                  "height": "2em",
+                                  "border": "1px solid #100339"
+                                },
+                              }
+        }}
+        submitButtonStyles={{
+          svg :{
+            "styles":{
+              "default":{
+                "fill": "#100339"
+              }
+            }
+          }
+        }}
+        introMessage={{ text: "Bonjour et bienvenue sur notre site ! Je suis votre assistant virtuel et je suis là pour vous aider à choisir la licence HubSpot qui correspond parfaitement à vos besoins. Éprouvé pour optimiser la gestion de vos contacts et améliorer votre expérience client, HubSpot offre plusieurs licences adaptées à différents objectifs. \n \n Que cherchez-vous à accomplir ? \n \n Découvrir les fonctionnalités de chaque licence ? \n \n Trouver une licence appropriée à vos objectifs spécifiques ? \n \n Obtenir une estimation de prix personnalisée selon vos besoins ? \n \n \nJe suis là pour vous guider. Dites-moi comment je peux vous aider !", "style": {"color": "#100339" }}} />
     </div>
   );
 }
