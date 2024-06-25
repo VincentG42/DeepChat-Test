@@ -2,6 +2,7 @@ import './App.css';
 import { DeepChat } from 'deep-chat-react';
 
 // When npm  run build, go to index.html add     <meta name="referrer" content="origin-when-cross-origin"> and change href link / into ./
+//If you change intro message, consider go to Assistant instruction prompt and correct it with new value
 
 function App() {
 
