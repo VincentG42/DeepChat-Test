@@ -1,10 +1,10 @@
 import './App.css';
 import { DeepChat } from 'deep-chat-react';
 
+// When npm  run build, go to index.html add     <meta name="referrer" content="origin-when-cross-origin"> and change href link / into ./
+
 function App() {
 
-  // const assistantId = process.env.REACT_APP_ASSISTANT_V1_ID;
-  // const apiKey = process.env.REACT_APP_OPENAI; 
 
   const requestInterceptor = (request) => {
     console.log('Requête DeepChat interceptée:', request);
@@ -46,17 +46,6 @@ function App() {
         }}
         requestInterceptor={requestInterceptor}
         responseInterceptor={responseInterceptor}
-        // directConnection={{
-        //   openAI: {
-        //     key: apiKey,
-        //     assistant: {
-        //       assistant_id: assistantId,
-        //     }
-        //   },
-        //   chat: {
-        //     system_prompt: `Vous êtes un assistant virtuel spécialisé dans l'aide à la sélection du bon pack HubSpot pour les entreprises. Fournissez des réponses claires et précises aux questions des utilisateurs concernant HubSpot en utilisant les documents fournis. Répondez uniquement en français.`
-        //   }
-        // }}
         style={{
           borderRadius: '10px',
           height: '90svh',
@@ -103,7 +92,7 @@ function App() {
             }
           }
         }}
-        introMessage={{ text: "Bonjour et bienvenue sur notre site ! Je suis votre assistant virtuel et je suis là pour vous aider à choisir la licence HubSpot qui correspond parfaitement à vos besoins. Éprouvé pour optimiser la gestion de vos contacts et améliorer votre expérience client, HubSpot offre plusieurs licences adaptées à différents objectifs. \n \n Que cherchez-vous à accomplir ? \n \n Découvrir les fonctionnalités de chaque licence ? \n \n Trouver une licence appropriée à vos objectifs spécifiques ? \n \n Obtenir une estimation de prix personnalisée selon vos besoins ? \n \n \nJe suis là pour vous guider. Dites-moi comment je peux vous aider !", "style": {"color": "#100339" }}} />
+        introMessage={{ text: "Bonjour ! Je suis IdeaBot, l'assistant virtuel de l'agence Ideagency. Je suis là pour vous aider à choisir la licence HubSpot idéale. Quels sont vos besoins ? \n \n Découvrir les fonctionnalités ?\n \nTrouver la licence adaptée à vos objectifs ?\n \nObtenir une estimation de prix personnalisée ?\n \n Comment puis-je vous aider ?", "style": {"color": "#100339" }}} />
     </div>
   );
 }
