@@ -9,6 +9,7 @@ import { TbMessageChatbot } from "react-icons/tb";
 
 function App() {
   const [chatVisible, setChatVisible] = useState(false);
+  const [openTime, setOpenTime] = useState(null);
 
   const requestInterceptor = (request) => {
     console.log('Requête DeepChat interceptée:', request);
@@ -43,9 +44,41 @@ function App() {
     window.location.reload();
   };
 
+  const sendChatbotOpenEvent = () => {
+    if (window.dataLayer) {
+      window.dataLayer.push({
+        'event': 'chatbot_opened',
+        'bot': 'IdeaBot'
+      });
+    }
+  };
+
+  const sendChatbotCloseEvent = (duration) => {
+    if (window.dataLayer) {
+      window.dataLayer.push({
+        'event': 'chatbot_closed',
+        'bot': 'IdeaBot',
+        'duration': duration // durée en secondes
+      });
+    }
+  };
+  
+
+  // Gestion de l'ouverture/fermeture du chatbot
+  const toggleChatVisibility = () => {
+    if (!chatVisible) {
+      sendChatbotOpenEvent();
+      setOpenTime(Date.now());
+    } else {
+      const duration = Math.round((Date.now() - openTime) / 1000); // durée en secondes
+      sendChatbotCloseEvent(duration);
+    }
+    setChatVisible(!chatVisible);
+  };
+
   return (
     <div className="App">
-      <button onClick={() => setChatVisible(!chatVisible)}
+      <button onClick={() => toggleChatVisibility()}
         style={{
           zIndex: 1000,
           positon: 'fixed',
@@ -83,52 +116,42 @@ function App() {
           requestInterceptor={requestInterceptor}
           responseInterceptor={responseInterceptor}
           style={{
-            borderRadius: '10px',
+            borderRadius: '2px',
             height: '100%',
             width: '90svw',
-            position:'relative'
+            position:'relative',
+            paddingTop: "10px",
+            backgroundImage: "linear-gradient(to bottom right, #0306fe, #a6e9ea)"
           }}
 
-          messageStyles={{
-            default: {
-              shared: {
-                bubble: {
-                  maxWidth: "100%", backgroundColor: "unset", marginTop: "15px", marginBottom: "15px", color: "#100339"
-                }
-              },
-              user: {
-                bubble: {
-                  marginLeft: "0px"
-                }
-              },
-              ai: {
-                outerContainer: {
-                  backgroundColor: "#f3f9ff", borderTop: "1px solid #100339", borderBottom: "1px solid #100339"
-                },
-
-              }
-            }
-          }}
+          // messageStyles={{
+          //   default: {
+          //     shared: {bubble: {maxWidth: "80%", backgroundColor: "unset", marginTop: "10px", marginBottom: "10px"}},
+          //     user: {bubble: { color: "black"}},
+          //     ai: {innerContainer: {borderRadius: "15px", backgroundColor: "white"}}
+          //   }
+          // }}
 
           textInput={{
-            placeholder: { "text": "Posez-moi vos questions?", "style": { "color": "#100339" } },
+            placeholder: { "text": "Posez-moi vos questions", "style": { "color": "#100339" } },
             styles: {
               "container": {
                 "width": "95%",
-                "border": "1px solid #100339"
+                // "border": "1px solid #100339"
               },
             }
           }}
-          submitButtonStyles={{
-            svg: {
-              "styles": {
-                "default": {
-                  "fill": "#100339"
-                }
-              }
-            }
-          }}
-          introMessage={{ text: "Bonjour ! Je suis IdeaBot, l'assistant virtuel de l'agence Ideagency. Je suis là pour vous aider à choisir la licence HubSpot idéale. Quels sont vos besoins ? \n \n Découvrir les fonctionnalités ?\n \nTrouver la licence adaptée à vos objectifs ?\n \nObtenir une estimation de prix personnalisée ?\n \n Comment puis-je vous aider ?", "style": { "color": "#100339" } }} />
+          // submitButtonStyles={{
+          //   svg: {
+          //     "styles": {
+          //       "default": {
+          //         "fill": "#100339"
+          //       }
+          //     }
+          //   }
+          // }}
+          introMessage={{ text: "Bonjour ! Je suis IdeaBot, l'assistant virtuel de l'agence Ideagency. Je suis là pour vous aider à choisir la licence HubSpot idéale. Quels sont vos besoins ? \n \n Découvrir les fonctionnalités ?\n \nTrouver la licence adaptée à vos objectifs ?\n \nObtenir une estimation de prix personnalisée ?\n \n Comment puis-je vous aider ?", role:"ai" }}
+          />
           <a href="#"onClick={() => setChatVisible(!chatVisible)}> Fermer</a>
     </>  
     )}
