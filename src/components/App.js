@@ -4,13 +4,17 @@ import { useState } from 'react';
 import { TbMessageChatbot } from "react-icons/tb";
 import FeedbackWindow from './FeedbackWindow';
 
+// When npm  run build, go to index.html add     <meta name="referrer" content="origin-when-cross-origin"> and change href link / into ./
+//If you change introMessage, please consider changing the open ai assistant prompt
+
 function App() {
   const [chatVisible, setChatVisible] = useState(false);
   const [openTime, setOpenTime] = useState(null);
   const [feedbackVisible, setFeedbackVisible] = useState(false);
+  const [sentMessagesCount, setSentMessagesCount] = useState(0);
 
   const requestInterceptor = (request) => {
-    console.log('Requête DeepChat interceptée:', request);
+    // console.log('Requête DeepChat interceptée:', request);
 
     if (request.body && request.body.messages) {
       request.body.messages = request.body.messages.map(msg => ({
@@ -23,8 +27,13 @@ function App() {
     return request;
   };
 
+  const handleSentMessagesCount = () => {
+    setSentMessagesCount(sentMessagesCount + 1);
+    console.log('sentMessagesCount', sentMessagesCount);
+  };
+
   async function responseInterceptor(response) {
-    console.log('Réponse DeepChat interceptée:', response);
+    // console.log('Réponse DeepChat interceptée:', response);
     if (response.thread_id) {
       localStorage.setItem('thread_id', response.thread_id);
     }
@@ -75,6 +84,7 @@ function App() {
     } else {
       const duration = Math.round((Date.now() - openTime) / 1000);
       console.log('duration', duration);
+      console.log('sentMessagesCount final', sentMessagesCount);
       sendChatbotCloseEvent(duration);
       setFeedbackVisible(true);
     }
@@ -118,6 +128,7 @@ function App() {
       {chatVisible && (
         <>
           <DeepChat
+            onSubmit={handleSentMessagesCount}
             request={{
               url: "/chatbot-idea/completion",
               method: "post",
@@ -128,30 +139,37 @@ function App() {
             requestInterceptor={requestInterceptor}
             responseInterceptor={responseInterceptor}
             style={{
-              borderRadius: '2px',
               height: '100%',
               width: '90svw',
               position: 'relative',
               paddingTop: "10px",
-              backgroundImage: "linear-gradient(to bottom right, #0306fe, #a6e9ea)"
+              borderRadius: "20px",
+              backgroundColor:"#F4F6FC"
             }}
+            messageStyles={{
+              default: {
+                shared: {bubble: {"maxWidth": "100%", "backgroundColor": "unset", "marginTop": "10px", "marginBottom": "10px"}},
+                user: {bubble: {"marginLeft": "0px", "color": "black"}},
+                ai: {innerContainer: {"borderRadius": "20px", "backgroundColor": "white"}}
+              }
+          }}
             textInput={{
               placeholder: { "text": "Posez-moi vos questions", "style": { "color": "#100339" } },
               styles: {
-                "container": {
-                  "width": "95%",
-                }
+                container: { "borderRadius": "10px", "border": "1px solid #969696", "boxShadow": "unset", "width": "90%", "marginLeft": "-15px" },
               }
             }}
+
             introMessage={{ text: "Bonjour ! Je suis IdeaBot, l'assistant virtuel de l'agence Ideagency. Je suis là pour vous aider à choisir la licence HubSpot idéale. Quels sont vos besoins ? \n \n Découvrir les fonctionnalités ?\n \nTrouver la licence adaptée à vos objectifs ?\n \nObtenir une estimation de prix personnalisée ?\n \n Comment puis-je vous aider ?", role: "ai" }}
           />
           <a href="#" onClick={toggleChatVisibility}>Fermer</a>
+
         </>
       )}
-      
-      {feedbackVisible && 
-        <FeedbackWindow 
-          onFeedback={handleFeedbackCompletion} 
+
+      {feedbackVisible &&
+        <FeedbackWindow
+          onFeedback={handleFeedbackCompletion}
           duration={Math.round((Date.now() - openTime) / 1000)}
         />
       }
