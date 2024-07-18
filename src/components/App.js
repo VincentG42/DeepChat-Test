@@ -4,14 +4,13 @@ import { useState } from 'react';
 import { TbMessageChatbot } from "react-icons/tb";
 import FeedbackWindow from './FeedbackWindow';
 
-// When npm  run build, go to index.html add     <meta name="referrer" content="origin-when-cross-origin"> and change href link / into ./
-//If you change introMessage, please consider changing the open ai assistant prompt
+// When npm  run build, go to index.html add     <meta name="referrer" content="origin-when-cross-origin"> and change href link "/"" into ""./""
+//If you change introMessage, please consider changing the open ai assistant instructions prompt
 
 function App() {
   const [chatVisible, setChatVisible] = useState(false);
   const [openTime, setOpenTime] = useState(null);
   const [feedbackVisible, setFeedbackVisible] = useState(false);
-  const [sentMessagesCount, setSentMessagesCount] = useState(0);
 
   const requestInterceptor = (request) => {
     // console.log('Requête DeepChat interceptée:', request);
@@ -25,11 +24,6 @@ function App() {
     }
 
     return request;
-  };
-
-  const handleSentMessagesCount = () => {
-    setSentMessagesCount(sentMessagesCount + 1);
-    console.log('sentMessagesCount', sentMessagesCount);
   };
 
   async function responseInterceptor(response) {
@@ -84,7 +78,6 @@ function App() {
     } else {
       const duration = Math.round((Date.now() - openTime) / 1000);
       console.log('duration', duration);
-      console.log('sentMessagesCount final', sentMessagesCount);
       sendChatbotCloseEvent(duration);
       setFeedbackVisible(true);
     }
@@ -114,7 +107,7 @@ function App() {
         }}>
         {!chatVisible && <TbMessageChatbot size={70} />}
       </button>
-      <a href="#" onClick={handleRefresh} style={{
+      <a href="link" onClick={handleRefresh} style={{
         zIndex: 1000,
         position: 'fixed',
         top: '1rem',
@@ -128,7 +121,6 @@ function App() {
       {chatVisible && (
         <>
           <DeepChat
-            onSubmit={handleSentMessagesCount}
             request={{
               url: "/chatbot-idea/completion",
               method: "post",
@@ -140,7 +132,7 @@ function App() {
             responseInterceptor={responseInterceptor}
             style={{
               height: '100%',
-              width: '90svw',
+              width: '50svw',
               position: 'relative',
               paddingTop: "10px",
               borderRadius: "20px",
@@ -162,7 +154,7 @@ function App() {
 
             introMessage={{ text: "Bonjour ! Je suis IdeaBot, l'assistant virtuel de l'agence Ideagency. Je suis là pour vous aider à choisir la licence HubSpot idéale. Quels sont vos besoins ? \n \n Découvrir les fonctionnalités ?\n \nTrouver la licence adaptée à vos objectifs ?\n \nObtenir une estimation de prix personnalisée ?\n \n Comment puis-je vous aider ?", role: "ai" }}
           />
-          <a href="#" onClick={toggleChatVisibility}>Fermer</a>
+          <a href="link" onClick={toggleChatVisibility}>Fermer</a>
 
         </>
       )}
